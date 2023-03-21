@@ -11,8 +11,9 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import papaparse from "papaparse";
 
-export default function SearchView() {
+function SearchView({ stockList }) {
   const [searchVal, setSearchVal] = useState("");
 
   const onSearchChange = (event) => {
@@ -20,7 +21,7 @@ export default function SearchView() {
   };
 
   const onSearchClicked = () => {
-    console.log(searchVal);
+    
   };
 
   return (
@@ -58,3 +59,27 @@ export default function SearchView() {
     </>
   );
 }
+
+export async function getStaticProps() {
+  try {
+    const res = await fetch(
+      `https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+    );
+    const stockCsv = await res.text();
+    const stockList = await papaparse.parse(stockCsv);
+    return {
+      props: {
+        stockList,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {
+        stockList: null,
+      },
+    };
+  }
+}
+
+export default SearchView;
