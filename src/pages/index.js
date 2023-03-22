@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Head from "next/head";
 
+import papaparse from "papaparse";
+
 import {
-  Box,
   Input,
   InputGroup,
   IconButton,
@@ -11,7 +12,8 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import papaparse from "papaparse";
+
+import ResultCard from "@/components/ResultCard";
 
 function SearchView({ stockList }) {
   const [searchVal, setSearchVal] = useState("");
@@ -66,9 +68,7 @@ function SearchView({ stockList }) {
           {searchVal &&
             searchedData &&
             searchedData.map((item, index) => (
-              <Box maxW="3xl" key={index}>
-                {JSON.stringify(item)}
-              </Box>
+              <ResultCard key={index} data={item} />
             ))}
         </VStack>
       </Container>
