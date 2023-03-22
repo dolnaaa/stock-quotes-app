@@ -55,7 +55,7 @@ function DetailsView({}) {
     } else {
       setSymbol("");
     }
-  }, []);
+  }, [symbol]);
 
   return (
     <>
