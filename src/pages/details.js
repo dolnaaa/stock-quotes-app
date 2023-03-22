@@ -83,6 +83,11 @@ function DetailsView({}) {
                           ]
                         }
                       />
+                      <Link href={{ pathname: "/" }}>
+                        <Box textAlign="center" mt="4" color="teal">
+                          Back to search
+                        </Box>
+                      </Link>
                     </>
                   ) : (
                     <Box>no data</Box>
@@ -105,7 +110,9 @@ function DetailsView({}) {
                 Stock is not specified, could not load deatils.
               </Heading>
               <Link href={{ pathname: "/" }}>
-                <Box textAlign="center">Back to search</Box>
+                <Box textAlign="center" mt="4" color="teal">
+                  Back to search
+                </Box>
               </Link>
             </>
           )}
