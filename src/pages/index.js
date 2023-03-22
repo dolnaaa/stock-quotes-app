@@ -23,7 +23,17 @@ function SearchView({ stockList }) {
     setSearchVal(event.target.value);
   };
 
+  const onSearchEnded = (event) => {
+    if (event.keyCode === 13) {
+      makeSearch();
+    }
+  };
+
   const onSearchClicked = () => {
+    makeSearch();
+  };
+
+  const makeSearch = () => {
     if (stockList && stockList.data) {
       const searchValUpper = searchVal.toUpperCase();
       setSearchedData(
@@ -55,6 +65,7 @@ function SearchView({ stockList }) {
             placeholder="Search..."
             value={searchVal}
             onChange={onSearchChange}
+            onKeyDown={onSearchEnded}
           />
           <IconButton
             aria-label="Search"
