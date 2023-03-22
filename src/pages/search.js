@@ -15,13 +15,25 @@ import papaparse from "papaparse";
 
 function SearchView({ stockList }) {
   const [searchVal, setSearchVal] = useState("");
+  const [searchedData, setSearchedData] = useState([]);
 
   const onSearchChange = (event) => {
     setSearchVal(event.target.value);
   };
 
   const onSearchClicked = () => {
-    
+    if (stockList && stockList.data) {
+      const searchValUpper = searchVal.toUpperCase();
+      setSearchedData(
+        stockList.data.filter(
+          (x) =>
+            x.symbol?.includes(searchValUpper) ||
+            x.name?.toUpperCase().includes(searchValUpper)
+        )
+      );
+    } else {
+      console.error("error getting the data");
+    }
   };
 
   return (
@@ -50,11 +62,15 @@ function SearchView({ stockList }) {
             onClick={onSearchClicked}
           />
         </InputGroup>
-        {searchVal && (
-          <VStack mt={8}>
-            <Box>{`result for ${searchVal}...`}</Box>
-          </VStack>
-        )}
+        <VStack mt={8}>
+          {searchVal &&
+            searchedData &&
+            searchedData.map((item, index) => (
+              <Box maxW="3xl" key={index}>
+                {JSON.stringify(item)}
+              </Box>
+            ))}
+        </VStack>
       </Container>
     </>
   );
@@ -66,7 +82,8 @@ export async function getStaticProps() {
       `https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
     );
     const stockCsv = await res.text();
-    const stockList = await papaparse.parse(stockCsv);
+    const stockList = await papaparse.parse(stockCsv, { header: true });
+
     return {
       props: {
         stockList,
