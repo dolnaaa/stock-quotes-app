@@ -11,18 +11,22 @@ import {
 } from "@chakra-ui/react";
 
 export default function StockOverviewCard({ overviewData }) {
+  if (overviewData == undefined || overviewData == null || !overviewData)
+    return null;
+  if (overviewData.hasOwnProperty("Note")) return null;
+
   return (
     <Card w="100%" maxW="3xl">
       <CardHeader>
         <Heading size="md" mb="2">
-          {overviewData?.Name}
+          {overviewData.Name}
         </Heading>
         <Box display="flex" alignItems="baseline">
           <Badge
             borderRadius="full"
             px="2"
             colorScheme="teal"
-          >{`${overviewData?.Exchange} • ${overviewData?.Symbol}`}</Badge>
+          >{`${overviewData.Exchange} • ${overviewData.Symbol}`}</Badge>
           <Box
             color="gray.500"
             fontWeight="semibold"
@@ -31,7 +35,7 @@ export default function StockOverviewCard({ overviewData }) {
             textTransform="uppercase"
             ml="2"
           >
-            {overviewData?.Currency}
+            {overviewData.Currency}
           </Box>
         </Box>
       </CardHeader>
@@ -42,7 +46,7 @@ export default function StockOverviewCard({ overviewData }) {
               Description
             </Heading>
             <Text pt="2" fontSize="sm">
-              {overviewData?.Description}
+              {overviewData.Description}
             </Text>
           </Box>
           <Box>
@@ -50,7 +54,7 @@ export default function StockOverviewCard({ overviewData }) {
               Address
             </Heading>
             <Text pt="2" fontSize="sm">
-              {overviewData?.Address}
+              {overviewData.Address}
             </Text>
           </Box>
         </Stack>

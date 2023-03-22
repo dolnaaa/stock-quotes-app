@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Heading, Container, Box, Spinner, VStack } from "@chakra-ui/react";
 
 import StockOverviewCard from "@/components/StockOverviewCard";
+import StockChartCard from "@/components/StockChartCard";
 
 function DetailsView({}) {
   const [symbol, setSymbol] = useState("");
@@ -26,21 +27,22 @@ function DetailsView({}) {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (sym) => {
       setDataLoaded(false);
       try {
         const resTimeSeriesDailyAdjusted = await fetch(
-          `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+          `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${sym}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
         );
         const timeSeriesDailyAdjusted = await resTimeSeriesDailyAdjusted.json();
 
         const resOverview = await fetch(
-          `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+          `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${sym}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
         );
         const overview = await resOverview.json();
 
         setStockData({ timeSeriesDailyAdjusted, overview });
         setDataLoaded(true);
+        //console.log({ timeSeriesDailyAdjusted, overview });
       } catch (err) {
         console.log(err);
         setStockData(null);
@@ -51,11 +53,9 @@ function DetailsView({}) {
     const queryData = getQueryStringParams(window.location.search);
     if (queryData?.symbol) {
       setSymbol(queryData.symbol);
-      fetchData();
-    } else {
-      setSymbol("");
+      fetchData(queryData.symbol);
     }
-  }, [symbol]);
+  }, []);
 
   return (
     <>
@@ -74,7 +74,16 @@ function DetailsView({}) {
               {dataLoaded ? (
                 <VStack mt="8">
                   {stockData ? (
-                    <StockOverviewCard overviewData={stockData?.overview} />
+                    <>
+                      <StockOverviewCard overviewData={stockData?.overview} />
+                      <StockChartCard
+                        dailyData={
+                          stockData?.timeSeriesDailyAdjusted[
+                            "Time Series (Daily)"
+                          ]
+                        }
+                      />
+                    </>
                   ) : (
                     <Box>no data</Box>
                   )}
