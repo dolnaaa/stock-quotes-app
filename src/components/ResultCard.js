@@ -1,5 +1,6 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Badge, Box, HStack, IconButton } from "@chakra-ui/react";
+import Link from "next/link";
 
 export default function ResultCard({ data }) {
   return (
@@ -44,12 +45,19 @@ export default function ResultCard({ data }) {
             {data && data["2. name"] ? data["2. name"] : "[no name data]"}
           </Box>
         </Box>
-        <IconButton
-          aria-label="ArrowForward"
-          icon={<ArrowForwardIcon />}
-          colorScheme="teal"
-          onClick={() => console.log("asd")}
-        />
+        <Link
+          href={{
+            pathname: "/details",
+            query: { symbol: data["1. symbol"] ? data["1. symbol"] : "" },
+          }}
+        >
+          <IconButton
+            aria-label="ArrowForward"
+            icon={<ArrowForwardIcon />}
+            colorScheme="teal"
+            //onClick={() => console.log("asd")}
+          />
+        </Link>
       </HStack>
     </Box>
   );
