@@ -2,7 +2,16 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
-import { Heading, Container, Box, Spinner, VStack } from "@chakra-ui/react";
+import {
+  Heading,
+  Container,
+  Box,
+  Spinner,
+  VStack,
+  IconButton,
+  useColorMode,
+} from "@chakra-ui/react";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 import StockOverviewCard from "@/components/StockOverviewCard";
 import StockChartCard from "@/components/StockChartCard";
@@ -11,6 +20,8 @@ function DetailsView({}) {
   const [symbol, setSymbol] = useState("");
   const [stockData, setStockData] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(true);
+
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const getQueryStringParams = (query) => {
     return query
@@ -64,7 +75,7 @@ function DetailsView({}) {
         <meta name="description" content="Search view for the app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Container maxW="container.lg" py={8}>
+      <Container maxW="container.lg" py={8} marginTop="42px">
         <Box maxW="3xl" mx="auto">
           {symbol != "" ? (
             <>
@@ -116,6 +127,15 @@ function DetailsView({}) {
               </Link>
             </>
           )}
+        </Box>
+        <Box position="absolute" top="0" right="0">
+          <IconButton
+            aria-label="ColorMode"
+            icon={colorMode == "light" ? <MoonIcon /> : <SunIcon />}
+            colorScheme="teal"
+            onClick={toggleColorMode}
+            margin="4"
+          />
         </Box>
       </Container>
     </>

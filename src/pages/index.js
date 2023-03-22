@@ -8,8 +8,10 @@ import {
   VStack,
   Heading,
   Container,
+  useColorMode,
+  Box,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { SearchIcon, SunIcon, MoonIcon } from "@chakra-ui/icons";
 
 import ResultCard from "@/components/ResultCard";
 
@@ -17,6 +19,8 @@ function SearchView() {
   const [searchVal, setSearchVal] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
+
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const onSearchChange = (event) => {
     setSearchVal(event.target.value);
@@ -55,7 +59,7 @@ function SearchView() {
         <meta name="description" content="Search view for the app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Container maxW="container.lg" py={8}>
+      <Container maxW="container.lg" py={8} marginTop="42px">
         <Heading as="h3" size="lg" px={4} mb={4} textAlign="center">
           Search for stock quotes by its symbol or name
         </Heading>
@@ -83,6 +87,15 @@ function SearchView() {
               ))
             : null}
         </VStack>
+        <Box position="absolute" top="0" right="0">
+          <IconButton
+            aria-label="ColorMode"
+            icon={colorMode == "light" ? <MoonIcon /> : <SunIcon />}
+            colorScheme="teal"
+            onClick={toggleColorMode}
+            margin="4"
+          />
+        </Box>
       </Container>
     </>
   );
