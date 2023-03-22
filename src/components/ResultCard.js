@@ -14,26 +14,24 @@ export default function ResultCard({ data }) {
       <HStack>
         <Box flex="1">
           <Box display="flex" alignItems="baseline">
-            {data?.symbol && (
+            {data && data["1. symbol"] && (
+              <Badge borderRadius="full" px="2" colorScheme="teal">
+                {data["1. symbol"]}
+              </Badge>
+            )}
+            {data && (
               <Box
                 color="gray.500"
                 fontWeight="semibold"
                 letterSpacing="wide"
                 fontSize="xs"
                 textTransform="uppercase"
-              >
-                {`${data.symbol}${data?.exchange ? ` : ${data.exchange}` : ""}`}
-              </Box>
-            )}
-            {data?.status && (
-              <Badge
-                borderRadius="full"
-                px="2"
-                colorScheme={data.status == "Active" ? "teal" : "red"}
                 ml="2"
               >
-                {data.status}
-              </Badge>
+                {`${data["3. type"] && data["3. type"]}${
+                  data["8. currency"] && ` • ${data["8. currency"]}`
+                }`}
+              </Box>
             )}
           </Box>
           <Box
@@ -43,7 +41,7 @@ export default function ResultCard({ data }) {
             lineHeight="tight"
             noOfLines={1}
           >
-            {data?.name ? data.name : "[no name data]"}
+            {data && data["2. name"] ? data["2. name"] : "[no name data]"}
           </Box>
         </Box>
         <IconButton

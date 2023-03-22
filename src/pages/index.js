@@ -1,8 +1,6 @@
 import { useState } from "react";
 import Head from "next/head";
 
-import papaparse from "papaparse";
-
 import {
   Input,
   InputGroup,
@@ -15,8 +13,9 @@ import { SearchIcon } from "@chakra-ui/icons";
 
 import ResultCard from "@/components/ResultCard";
 
-function SearchView({ stockList }) {
+function SearchView() {
   const [searchVal, setSearchVal] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
 
   const onSearchChange = (event) => {
@@ -33,19 +32,20 @@ function SearchView({ stockList }) {
     makeSearch();
   };
 
-  const makeSearch = () => {
-    if (stockList && stockList.data) {
-      const searchValUpper = searchVal.toUpperCase();
-      setSearchedData(
-        stockList.data.filter(
-          (x) =>
-            x.symbol?.includes(searchValUpper) ||
-            x.name?.toUpperCase().includes(searchValUpper)
-        )
-      );
-    } else {
-      console.error("error getting the data");
-    }
+  const makeSearch = async () => {
+    if (searchVal != "")
+      try {
+        setSearchLoading(true);
+        const res = await fetch(
+          `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchVal}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+        );
+        setSearchedData((await res.json())?.bestMatches);
+        setSearchLoading(false);
+      } catch (err) {
+        console.log(err);
+        setSearchedData([]);
+        setSearchLoading(false);
+      }
   };
 
   return (
@@ -76,38 +76,16 @@ function SearchView({ stockList }) {
           />
         </InputGroup>
         <VStack mt={8}>
-          {searchVal &&
-            searchedData &&
-            searchedData.map((item, index) => (
-              <ResultCard key={index} data={item} />
-            ))}
+          {searchLoading == false
+            ? searchedData &&
+              searchedData.map((item, index) => (
+                <ResultCard key={index} data={item} />
+              ))
+            : null}
         </VStack>
       </Container>
     </>
   );
-}
-
-export async function getStaticProps() {
-  try {
-    const res = await fetch(
-      `https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
-    );
-    const stockCsv = await res.text();
-    const stockList = await papaparse.parse(stockCsv, { header: true });
-
-    return {
-      props: {
-        stockList,
-      },
-    };
-  } catch (err) {
-    console.log(err);
-    return {
-      props: {
-        stockList: null,
-      },
-    };
-  }
 }
 
 export default SearchView;
