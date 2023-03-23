@@ -41,19 +41,19 @@ function DetailsView({}) {
     const fetchData = async (sym) => {
       setDataLoaded(false);
       try {
-        const resTimeSeriesDailyAdjusted = await fetch(
-          `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${sym}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+        const resTimeSeriesInterdayAdjusted = await fetch(
+          `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${sym}&interval=5min&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
         );
-        const timeSeriesDailyAdjusted = await resTimeSeriesDailyAdjusted.json();
+        const timeSeriesInterdayAdjusted =
+          await resTimeSeriesInterdayAdjusted.json();
 
         const resOverview = await fetch(
           `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${sym}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
         );
         const overview = await resOverview.json();
 
-        setStockData({ timeSeriesDailyAdjusted, overview });
+        setStockData({ timeSeriesInterdayAdjusted, overview });
         setDataLoaded(true);
-        //console.log({ timeSeriesDailyAdjusted, overview });
       } catch (err) {
         console.log(err);
         setStockData(null);
@@ -88,10 +88,13 @@ function DetailsView({}) {
                     <>
                       <StockOverviewCard overviewData={stockData?.overview} />
                       <StockChartCard
-                        dailyData={
-                          stockData?.timeSeriesDailyAdjusted[
-                            "Time Series (Daily)"
+                        interdayData={
+                          stockData?.timeSeriesInterdayAdjusted[
+                            "Time Series (5min)"
                           ]
+                        }
+                        currency={
+                          stockData?.overview && stockData?.overview["Currency"]
                         }
                       />
                       <Link href={{ pathname: "/" }}>

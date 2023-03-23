@@ -13,7 +13,18 @@ import {
 export default function StockOverviewCard({ overviewData }) {
   if (overviewData == undefined || overviewData == null || !overviewData)
     return null;
-  if (overviewData.hasOwnProperty("Note")) return null;
+
+  if (overviewData.hasOwnProperty("Note"))
+    return (
+      <Card w="100%" maxW="3xl">
+        <CardHeader>
+          <Heading size="md">Could not fetch data from API</Heading>
+        </CardHeader>
+        <CardBody>
+          <Text fontSize="sm">{overviewData.Note}</Text>
+        </CardBody>
+      </Card>
+    );
 
   return (
     <Card w="100%" maxW="3xl">
