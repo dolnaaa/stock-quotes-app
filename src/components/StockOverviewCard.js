@@ -10,10 +10,19 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+/**
+ * A detail card containing company & stock data
+ * @param {object} props { overviewData }
+ * @returns The card displayed in details. It displays the name,
+ * exchange, symbol, currency, description, address from the 
+ * data passed. If a note is passed, it writes out that.
+ */
 export default function StockOverviewCard({ overviewData }) {
+  // if the data passed is somehow empty, it returns nothing
   if (overviewData == undefined || overviewData == null || !overviewData)
     return null;
 
+  // if it's a note, then it renders a note telling card
   if (overviewData.hasOwnProperty("Note"))
     return (
       <Card w="100%" maxW="3xl">

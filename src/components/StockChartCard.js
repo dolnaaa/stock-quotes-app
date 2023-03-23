@@ -31,10 +31,20 @@ ChartJS.register(
   Legend
 );
 
+/**
+ * A detail card containing current price and a chart about price
+ * changes
+ * @param {object} props { interdayData, currency = "" }
+ * @returns The card displayed in details. It displays the current
+ * price, and a chart visualizing the interday highs and lows
+ * from the data passed. If a note is passed, it writes out that.
+ */
 export default function StockChartCard({ interdayData, currency = "" }) {
+  // if the data passed is somehow empty, it returns nothing
   if (interdayData == undefined || interdayData == null || !interdayData)
     return null;
 
+  // if it's a note, then it renders a note telling card
   if (interdayData.hasOwnProperty("Note"))
     return (
       <Card w="100%" maxW="3xl">
@@ -47,18 +57,22 @@ export default function StockChartCard({ interdayData, currency = "" }) {
       </Card>
     );
 
+  // this object is for the line chart
   const chartData = {
+    // the interdayData is sorted by date descending, so this
+    // revetrs it and only keeps the HH:MM:SS part of the date
     labels: Object.keys(interdayData)
       .reverse()
       .map((x) => x.split(" ")[1]),
+    // there are two datasets, one for the highs and one for the
+    // lows, both reverts the dates, then fixes prices at 2 decimal
+    // places
     datasets: [
       {
         label: "High Price",
         data: Object.keys(interdayData)
           .reverse()
-          .map((x) =>
-            Number.parseFloat(interdayData[x]["2. high"]).toFixed(2)
-          ),
+          .map((x) => Number.parseFloat(interdayData[x]["2. high"]).toFixed(2)),
         borderColor: "teal",
       },
       {
@@ -71,6 +85,7 @@ export default function StockChartCard({ interdayData, currency = "" }) {
     ],
   };
 
+  // this object is for the line chart
   const options = {
     responsive: true,
   };

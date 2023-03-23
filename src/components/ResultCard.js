@@ -2,6 +2,13 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Badge, Box, HStack, IconButton } from "@chakra-ui/react";
 import Link from "next/link";
 
+/**
+ * A Box visualizing the data given to it from search
+ * @param {object} props { data }
+ * @returns The Box showing the symbol, type, currency,
+ * name of the passed stock, also a button pointing to
+ * the details page with the symbol
+ */
 export default function ResultCard({ data }) {
   return (
     <Box

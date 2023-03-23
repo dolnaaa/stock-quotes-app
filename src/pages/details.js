@@ -16,6 +16,16 @@ import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import StockOverviewCard from "@/components/StockOverviewCard";
 import StockChartCard from "@/components/StockChartCard";
 
+/**
+ * Details page of the application
+ * @param {*} props
+ * @returns The deatils page. This page is simple like the search page,
+ * also contains the color mode switcher, but beyond that it shows the
+ * data of the searched stock(this is also from alphavantage api).
+ * This page handles a few exceptions, like no symbol in query, or
+ * alphavantage api returning a note(sometimes it blocks because with
+ * a free api key you can only do 5 calls/min or 500 calls/day)
+ */
 function DetailsView({}) {
   const [symbol, setSymbol] = useState("");
   const [stockData, setStockData] = useState(null);
@@ -23,6 +33,13 @@ function DetailsView({}) {
 
   const { colorMode, toggleColorMode } = useColorMode();
 
+  /**
+   * This function processees the given query string passed to it
+   * so it can be used as an object
+   * @param {string} query window.location.search preferrably or a
+   * string formally similar
+   * @returns object with all the name-value pairs of the given query
+   */
   const getQueryStringParams = (query) => {
     return query
       ? (/^[?#]/.test(query) ? query.slice(1) : query)
@@ -38,6 +55,14 @@ function DetailsView({}) {
   };
 
   useEffect(() => {
+    /**
+     * This async function is trying to fetch data from the alphavantage
+     * api TIME_SERIES_DAILY and OVERVIEW function of the passed symbol.
+     * After the fetch the data obtained is stored in stockData state.
+     * While the fetch is happening the dataLoaded state stays false,
+     * so the app displays a spinner until then
+     * @param {string} sym stock symbol to fetch for
+     */
     const fetchData = async (sym) => {
       setDataLoaded(false);
       try {
@@ -55,14 +80,15 @@ function DetailsView({}) {
         setStockData({ timeSeriesInterdayAdjusted, overview });
         setDataLoaded(true);
       } catch (err) {
-        console.log(err);
+        //console.log(err);
         setStockData(null);
         setDataLoaded(true);
       }
     };
 
     const queryData = getQueryStringParams(window.location.search);
-    if (queryData?.symbol) {
+    // the fetch only happens if there is a symbol
+    if (queryData?.symbol && queryData?.symbol != "") {
       setSymbol(queryData.symbol);
       fetchData(queryData.symbol);
     }
